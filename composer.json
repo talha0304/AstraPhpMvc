@@ -1,0 +1,17 @@
+{
+    "name": "lenovo/astra-phpmvc-framework",
+    "authors": [
+        {
+            "name": "talha",
+            "email": "mtalhasaleem0304@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "app\\": "./"
+        }
+    },
+    "require": {
+        "vlucas/phpdotenv": "^5.6"
+    }
+}
