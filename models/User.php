@@ -43,6 +43,29 @@ class User extends UserModel
 
     }
 
+    public function update($id)
+    {
+        $attributes = $this->attribute();
+        $params = array_map(fn($attr) => "$attr = :$attr", $attributes);
+        $sql = "UPDATE {$this->tableName()} SET " . implode(',', $params) . " WHERE id = :id";
+        $statement = self::prepare($sql);
+        foreach ($attributes as $attribute) {
+            $statement->bindValue(":$attribute", $this->{$attribute});
+        }
+        $statement->bindValue(':id', $id);
+        return $statement->execute();
+    }
+
+
+    public function delete($id)
+    {
+        $sql = "DELETE FROM {$this->tableName()} WHERE id = :id";
+        $statement = self::prepare($sql);
+        $statement->bindValue(':id', $id);
+        return $statement->execute();
+    }
+
+
     public function rules(): array
     {
         return [

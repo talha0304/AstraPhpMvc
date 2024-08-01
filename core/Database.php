@@ -92,12 +92,14 @@ class Database
         echo '[' . date('Y-m-d H:i:s') . '] -' . $msg . PHP_EOL;
     }
 
-    public function delete($table, $condition)
+    public function delete($tableName, $condition, $params = [])
     {
-        $sql = "DELETE FROM $table WHERE $condition";
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute();
-    
+        $sql = "DELETE FROM $tableName WHERE $condition";
+        $statement = $this->prepare($sql);
+        foreach ($params as $key => $value) {
+            $statement->bindValue(":$key", $value);
+        }
+        return $statement->execute();
     }
-
 }
+

@@ -7,6 +7,7 @@ use app\core\Controller;
 use app\core\Request;
 use app\core\Response;
 use app\models\ContactForm;
+use app\models\User;
 
 /**
  * Class SiteController
@@ -28,7 +29,7 @@ class SiteController extends Controller
             }
         }
 
-        
+
         return $this->render('contact', [
             'model' => $contact
         ]);
@@ -39,17 +40,54 @@ class SiteController extends Controller
         $params = [
             'name' => "AstraPHP"
         ];
-        
+
         return $this->render('home', $params);
     }
 
-   
-    public function Showuser()
+
+    public function showUsers()
     {
+        return $this->showTableData('users', 'profile');
+    }
 
-        return $this->ShowTableData('users', '/profile');
+    public function deleteUser(Request $request, Response $response)
+    {
+        $id = $request->getBody()['id'] ?? null;
+        if ($id) {
+            $user = new User();
+            $user->delete($id);
+            Application::$app->session->setFlash('success', 'User deleted successfully.');
+        }
+        return $response->redirect('/profile');
+    }
+    
+    public function updateUser(Request $request, Response $response)
+    {
+        $user = new User();
+        $id = $request->getBody()['id'] ?? null;
+        if ($id) {
+            $user = $user->findOne(['id' => $id]);
 
+            if (!$user) {
+
+                Application::$app->session->setFlash('error', 'User not found.');
+                return $response->redirect('/profile');
+            }
+        }
+        if ($request->isPost()) {
+            $data = $request->getBody();
+            $user->loadData($data);
+
+
+            if ( $user->update($id)) {
+                Application::$app->session->setFlash('success', 'User updated successfully.');
+                return $response->redirect('/profile');
+            }
+        }
+        return $this->render('updateuser', ['model' => $user]);
     }
 
 
 }
+
+

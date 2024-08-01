@@ -36,7 +36,11 @@ $app->router->get('/register', [AuthController::class, 'register']);
 $app->router->post('/register', [AuthController::class, 'register']);
 
 $app->router->get('/logout', [AuthController::class, 'logout']);
-$app->router->get('/profile', [SiteController::class, 'showuser']);
+$app->router->get('/profile', [SiteController::class, 'showUsers']);
+$app->router->post('/deleteuser', [SiteController::class, 'deleteUser']);
+$app->router->get('/updateuser', [SiteController::class, 'updateUser']);
+$app->router->post('/updateuser', [SiteController::class, 'updateUser']);
+
 
 
 

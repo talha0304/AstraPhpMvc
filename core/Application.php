@@ -24,9 +24,9 @@ class Application
     public Session $session;
     public Database $db;
 
-    public ?DbModel $user;
+    public ?DbModel $user = null; // Initialize to null
     public View $view;
-    public static Application $app;
+    public static ?Application $app = null; // Initialize to null
     public ?Controller $controller = null;
 
     public function __construct($rootPath, array $config)
@@ -38,10 +38,14 @@ class Application
         $this->response = new Response();
         $this->session = new Session();
         $this->router = new Router($this->request, $this->response);
-        $this->view = new View;
+        $this->view = new View();
         $this->db = new Database($config['db']);
 
+        $this->initializeUser();
+    }
 
+    private function initializeUser()
+    {
         $primaryValue = $this->session->get('user');
         if ($primaryValue) {
             $user = new User();
@@ -50,11 +54,8 @@ class Application
             if ($user) {
                 $this->user = $user;
             }
-        } else {
-            $this->user = null;
         }
     }
-
 
     public function run()
     {
@@ -78,18 +79,14 @@ class Application
         $this->controller = $controller;
     }
 
-
     public function login(DbModel $user)
     {
-
         $this->user = $user;
         $primaryKey = $user->primarykey();
         $primaryValue = $user->{$primaryKey};
         $this->session->set('user', $primaryValue);
         return true;
-
     }
-
 
     public function logout()
     {
@@ -97,9 +94,8 @@ class Application
         $this->session->remove('user');
     }
 
-
-    public static function isGuest()
+    public static function isGuest(): bool
     {
         return !self::$app->user;
-    }
+    }   
 }

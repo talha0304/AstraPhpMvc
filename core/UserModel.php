@@ -16,7 +16,7 @@ abstract class UserModel extends DbModel
 {
     abstract public function getDisplayName(): string;
     
-    public function delete()
+    public function delete($id)
     {
         $tableName = $this->tableName();
         $primaryKey = $this->primaryKey();
